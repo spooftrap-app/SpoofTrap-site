@@ -1087,7 +1087,9 @@ final class BypassViewModel: ObservableObject {
         do {
             let data = try JSONEncoder().encode(favorites)
             try data.write(to: favoritesURL, options: .atomic)
-        } catch {}
+        } catch {
+            appendLog("Failed to save favorites: \(error.localizedDescription)")
+        }
     }
 
     nonisolated static func locateResourceBundle() -> Bundle? {

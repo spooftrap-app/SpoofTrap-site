@@ -68,6 +68,8 @@ final class GameHistoryManager: ObservableObject {
             )
             let data = try JSONEncoder().encode(sessions)
             try data.write(to: storageURL, options: .atomic)
-        } catch {}
+        } catch {
+            print("Failed to save game history: \(error)")
+        }
     }
 }
