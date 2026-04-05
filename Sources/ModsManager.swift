@@ -186,6 +186,8 @@ final class ModsManager: ObservableObject {
         var applied = 0
         var failed = 0
 
+        var backupCache: [String: Bool] = [:]
+
         for mod in installedMods where mod.isEnabled {
             guard let cat = category(for: mod.categoryId) else { continue }
 
@@ -213,10 +215,22 @@ final class ModsManager: ObservableObject {
                 let targetPath = (base as NSString).appendingPathComponent(relPath)
                 let backupPath = backupPathFor(target: targetPath)
 
-                if !fileManager.fileExists(atPath: backupPath) && fileManager.fileExists(atPath: targetPath) {
+                let backupExists: Bool
+                if let cached = backupCache[backupPath] {
+                    backupExists = cached
+                } else {
+                    let exists = fileManager.fileExists(atPath: backupPath)
+                    backupCache[backupPath] = exists
+                    backupExists = exists
+                }
+
+                let targetExists = fileManager.fileExists(atPath: targetPath)
+
+                if !backupExists && targetExists {
                     let backupDir = (backupPath as NSString).deletingLastPathComponent
                     try? fileManager.createDirectory(atPath: backupDir, withIntermediateDirectories: true)
                     try? fileManager.copyItem(atPath: targetPath, toPath: backupPath)
+                    backupCache[backupPath] = true
 
                     if let idx = installedMods.firstIndex(where: { $0.id == mod.id }) {
                         installedMods[idx].originalBackedUp = true
@@ -227,7 +241,7 @@ final class ModsManager: ObservableObject {
                 try? fileManager.createDirectory(atPath: targetDir, withIntermediateDirectories: true)
 
                 do {
-                    if fileManager.fileExists(atPath: targetPath) {
+                    if targetExists {
                         try fileManager.removeItem(atPath: targetPath)
                     }
                     try fileManager.copyItem(atPath: sourceFile, toPath: targetPath)
