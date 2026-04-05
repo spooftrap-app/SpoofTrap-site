@@ -149,6 +149,7 @@ struct ContentView: View {
                                 .foregroundStyle(.white.opacity(0.5))
                         }
                         .buttonStyle(.plain)
+                        .help("License Information")
                     }
                 }
                 
@@ -275,6 +276,7 @@ struct ContentView: View {
                                         .font(.system(size: 10, weight: .semibold))
                                 }
                                 .buttonStyle(SmallButtonStyle())
+                                .help("Reveal in Finder")
                             }
                         }
                     }
@@ -318,6 +320,7 @@ struct ContentView: View {
                                         .font(.system(size: 10, weight: .semibold))
                                 }
                                 .buttonStyle(SmallButtonStyle())
+                                .help("Reveal in Finder")
                             }
                         }
                     }
@@ -742,6 +745,7 @@ struct ContentView: View {
                         .foregroundStyle(.red.opacity(0.6))
                 }
                 .buttonStyle(.plain)
+                .help("Remove Custom Flag")
             }
         }
         .padding(.vertical, 6)
@@ -999,6 +1003,7 @@ struct ContentView: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(viewModel.isRunning)
+                .help("Remove Mod")
             }
         }
         .padding(.vertical, 4)
@@ -1247,6 +1252,7 @@ struct ContentView: View {
                                     .foregroundStyle(.red.opacity(0.7))
                             }
                             .buttonStyle(.plain)
+                            .help("Remove Favorite")
                         }
                         .padding(.vertical, 2)
                     }
