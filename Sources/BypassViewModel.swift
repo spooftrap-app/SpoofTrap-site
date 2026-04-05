@@ -153,7 +153,7 @@ final class BypassViewModel: ObservableObject {
     var binaryDisplayPath: String {
         let path = resolvedBinaryPath ?? customSpoofdpiPath
         if path.isEmpty {
-            return "Bundle / ~/Documents / PATH"
+            return "Bundle"
         }
         return Self.displayPath(path)
     }
@@ -438,7 +438,7 @@ final class BypassViewModel: ObservableObject {
         }
 
         guard binaryAvailable, let resolvedBinaryPath else {
-            appendLog("spoofdpi is missing. Set a valid binary path or place it in ~/Documents.")
+            appendLog("spoofdpi is missing. Set a valid binary path.")
             state = .stopped
             return
         }
@@ -898,10 +898,6 @@ final class BypassViewModel: ObservableObject {
 
     private func resolveSpoofDPIBinaryPath() -> String? {
         let fileManager = FileManager.default
-        let pathEnvironment = ProcessInfo.processInfo.environment["PATH"] ?? ""
-        let pathDirectories = pathEnvironment
-            .split(separator: ":")
-            .map(String.init)
         let appResourceURL = Bundle.main.resourceURL
         let nestedBundleResourceURL = Self.locateResourceBundle()?.resourceURL
 
@@ -910,9 +906,8 @@ final class BypassViewModel: ObservableObject {
             appResourceURL?.appendingPathComponent("bin/spoofdpi").path ?? "",
             appResourceURL?.appendingPathComponent("spoofdpi").path ?? "",
             nestedBundleResourceURL?.appendingPathComponent("bin/spoofdpi").path ?? "",
-            nestedBundleResourceURL?.appendingPathComponent("spoofdpi").path ?? "",
-            NSString(string: "~/Documents/spoofdpi").expandingTildeInPath
-        ] + pathDirectories.map { URL(fileURLWithPath: $0).appendingPathComponent("spoofdpi").path }
+            nestedBundleResourceURL?.appendingPathComponent("spoofdpi").path ?? ""
+        ]
 
         for candidate in candidates where !candidate.isEmpty && fileManager.isExecutableFile(atPath: candidate) {
             return candidate
